@@ -43,9 +43,7 @@ function observeChildren<T extends string>(
 	observer: (instances: Record<T, Instance>) => () => void,
 ): () => void
 ```
-Observes a collection of children within the given `parent` instance. When _all_ children are present, the `observer` will be called. When _any_ of the children are no longer present, the observer's returned function is called.
-
-In other words, this observer can guarantee the existence of a compound group of instances.
+Observes a collection of children within the given `parent` instance. When _all_ children are present, the `observer` will be called. When _any_ of the children are no longer present, the observer's returned function is called. In other words, this observer can guarantee the existence of a compound group of instances.
 
 The returned function can be called to stop the observation process, which is also automatically called if the `parent` instance is destroyed.
 
@@ -53,10 +51,12 @@ The returned function can be called to stop the observation process, which is al
 const stop = observeChildren(
 	workspace,
 	{
+		// Custom mapping of keys to instance names:
 		Ground: "Baseplate",
 		Spawn: "SpawnLocation",
 	},
 	(children) => {
+		// Use the same keys from above to access the actual instances:
 		print(children.Ground, children.Spawn);
 		return () => {
 			print("Ground and/or spawn no longer present");

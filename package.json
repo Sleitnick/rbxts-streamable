@@ -1,7 +1,7 @@
 {
   "name": "@rbxts/streamable",
   "version": "0.1.0",
-  "description": "Watch instances that stream in and out of existence",
+  "description": "Observe instances that stream in and out of existence",
   "main": "out/init.lua",
   "scripts": {
     "build": "rbxtsc",
