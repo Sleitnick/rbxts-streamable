@@ -15,21 +15,22 @@ function observeInstance(parent: Instance, instanceName: string, recursive: bool
 			connection.Disconnect();
 		}
 		table.clear(connections);
+		if (observerCleanupFn !== undefined) {
+			task.spawn(observerCleanupFn);
+			observerCleanupFn = undefined;
+		}
 	};
 
 	const queueDeparented = () => {
 		if (queuedParentThread !== undefined) {
 			task.cancel(queuedParentThread);
 		}
+		queuedParentThread = undefined;
 		observedInstance = undefined;
-		queuedParentThread = task.defer(() => {
-			queuedParentThread = undefined;
-			if (observerCleanupFn !== undefined) {
-				const fn = observerCleanupFn;
-				observerCleanupFn = undefined;
-				fn();
-			}
-		});
+		if (observerCleanupFn !== undefined) {
+			task.spawn(observerCleanupFn);
+			observerCleanupFn = undefined;
+		}
 	};
 
 	const queueParented = (instance: Instance) => {
@@ -92,6 +93,7 @@ function observeInstances<T extends string>(
 	let onInstancesChangedThread: thread | undefined;
 	let observerCleanupFn: (() => void) | undefined;
 	let numInstances = 0;
+
 	const onInstancesChanged = () => {
 		if (onInstancesChangedThread !== undefined) {
 			task.cancel(onInstancesChangedThread);
@@ -110,6 +112,7 @@ function observeInstances<T extends string>(
 			}
 		});
 	};
+
 	// eslint-disable-next-line roblox-ts/no-array-pairs
 	for (const [recordName, instanceName] of pairs(instanceNames)) {
 		numInstances++;
@@ -124,6 +127,7 @@ function observeInstances<T extends string>(
 			}),
 		);
 	}
+
 	return () => {
 		if (onInstancesChangedThread !== undefined) {
 			task.cancel(onInstancesChangedThread);
@@ -134,22 +138,18 @@ function observeInstances<T extends string>(
 	};
 }
 
-// Example:
-/*
-const stopObserving = observeChild(game.Workspace, "Baseplate", (baseplate) => {
-	print(`Baseplate exists ${baseplate.GetFullName()}`);
-	return () => {
-		// Cleanup
-		print("Baseplate no longer exists (or observation stopped)");
-	};
-});
+export function observeChildren<T extends string>(
+	parent: Instance,
+	childrenNames: Record<T, string>,
+	observer: (instances: Record<T, Instance>) => () => void,
+): () => void {
+	return observeInstances(parent, childrenNames, false, observer);
+}
 
-observeInstances(game.Workspace, { Baseplate: "Baseplate" }, false, (instances) => {
-	// const xyz = instances.XYZ;
-	const baseplate = instances.Baseplate;
-	return () => {};
-});
-
-// Stop observing; also calls cleanup function:
-stopObserving();
-*/
+export function observeDescendants<T extends string>(
+	parent: Instance,
+	descendantNames: Record<T, string>,
+	observer: (instances: Record<T, Instance>) => () => void,
+): () => void {
+	return observeInstances(parent, descendantNames, true, observer);
+}
