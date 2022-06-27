@@ -132,9 +132,11 @@ function observeInstances<T extends string>(
 		if (onInstancesChangedThread !== undefined) {
 			task.cancel(onInstancesChangedThread);
 		}
+		onInstancesChangedThread = undefined;
 		for (const cleanup of observerCleanups) {
 			cleanup();
 		}
+		observerCleanups.clear();
 	};
 }
 
