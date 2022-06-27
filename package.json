@@ -1,16 +1,17 @@
 {
   "name": "@rbxts/streamable",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.1.0",
+  "description": "Watch instances that stream in and out of existence",
   "main": "out/init.lua",
   "scripts": {
     "build": "rbxtsc",
     "watch": "rbxtsc -w",
     "prepublishOnly": "npm run build"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": ["streamable", "streaming", "streamingenabled"],
+  "author": "sleitnick",
+  "repository": "github:Sleitnick/rbxts-streamable",
+  "license": "MIT",
   "types": "out/index.d.ts",
   "files": [
     "out",
