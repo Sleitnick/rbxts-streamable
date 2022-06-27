@@ -1,8 +1,7 @@
 # Streamable
+A common problem in streamed Roblox experiences is dealing with the existence of instances on the client. 
 
-A common problem in streamed Roblox games is dealing with the existence of instances on the client. 
-
-In streamed Roblox experiences, observing the existence of instances on the client is non-trivial. The Streamable package seeks to make observing instances easy.
+The Streamable package seeks to solve this complexity by providing a series of helper functions. These functions observe the existence of instances as they stream in and out of existence.
 
 ## `observeChild`
 ```ts
