@@ -40,7 +40,7 @@ This is the same as `observeChild`, except it observes across all descendants of
 function observeChildren<T extends string>(
 	parent: Instance,
 	childrenNames: Record<T, string>,
-	observer: (instances: Record<T, Instance>) => () => void,
+	observer: (children: Record<T, Instance>) => () => void,
 ): () => void
 ```
 Observes a collection of children within the given `parent` instance. When _all_ children are present, the `observer` will be called. When _any_ of the children are no longer present, the observer's returned function is called. In other words, this observer can guarantee the existence of a compound group of instances.
@@ -66,4 +66,11 @@ const stop = observeChildren(
 ```
 
 ## `observeDescendants`
+```ts
+function observeDescendants<T extends string>(
+	parent: Instance,
+	descendantNames: Record<T, string>,
+	observer: (descendants: Record<T, Instance>) => () => void,
+): () => void
+```
 This is the same as `observeChildren`, except it observes across all descendants of the given `parent` instance.
